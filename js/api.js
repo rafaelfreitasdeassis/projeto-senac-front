@@ -1,5 +1,5 @@
-const API_BASE = 'http://localhost:3000';
-const TOKEN_KEY = 'projeto-senac-token';
+const API_BASE = 'https://projeto-senac-back.vercel.app/';
+const TOKEN_KEY = 'acesso-carlos';
 
 function getToken() {
     return localStorage.getItem(TOKEN_KEY);
