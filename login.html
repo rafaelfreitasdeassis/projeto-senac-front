@@ -3,47 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login — TaskFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
-        <h1>Login</h1>
-        <p>Entre para acessar suas tarefas.</p>
-    </header>
 
-    <nav class="page-nav">
-        <a class="button" href="index.html">Início</a>
-        <a class="button" href="cadastro.html">Cadastro</a>
-        <a class="button" href="login.html">Login</a>
-        <a class="button" href="perfil.html">Perfil</a>
-        <a class="button" href="tarefas.html">Tarefas</a>
+    <!-- ── NAVBAR ── -->
+    <nav class="topbar">
+        <div class="topbar-inner">
+            <a class="topbar-brand" href="index.html">
+                <span class="brand-name">Task<span>Flow</span></span>
+            </a>
+            <div class="topbar-nav">
+                <a class="nav-link" href="index.html">Início</a>
+                <a class="nav-link" href="cadastro.html">Cadastro</a>
+                <a class="nav-link active" href="login.html">Login</a>
+                <a class="nav-link" href="perfil.html">Perfil</a>
+                <a class="nav-link" href="tarefas.html">Tarefas</a>
+            </div>
+            <div class="topbar-actions">
+                <button id="topbar-logout" class="secondary small is-hidden" type="button">Sair</button>
+            </div>
+        </div>
     </nav>
 
-    <div class="container">
-        <section class="card instructions">
-            <h2>Instruções</h2>
-            <p>Digite o e-mail e a senha do usuário cadastrado. O token JWT será salvo no navegador.</p>
+    <!-- ── CONTEÚDO ── -->
+    <div class="container center">
+
+        <section class="card info-card">
+            <p>Digite o e-mail e a senha do usuário cadastrado. O token JWT será salvo no navegador automaticamente.</p>
         </section>
+
         <section class="card">
+            <div class="card-header">
+                <div>
+                    <h2>Entrar na conta</h2>
+                    <p>Acesse suas tarefas com segurança.</p>
+                </div>
+            </div>
+
             <form id="form-login">
                 <div class="form-field">
                     <label for="login-email">E-mail</label>
-                    <input type="email" id="login-email" required>
+                    <input type="email" id="login-email" placeholder="seu@email.com" required>
                 </div>
                 <div class="form-field">
                     <label for="login-senha">Senha</label>
-                    <input type="password" id="login-senha" required>
+                    <input type="password" id="login-senha" placeholder="••••••••" required>
                 </div>
-                <button type="submit">Entrar</button>
+                <button type="submit" class="full-width">Entrar</button>
             </form>
-            <div id="resultado"></div>
+
             <div class="links">
-                <a href="index.html">Voltar</a>
-                <a href="cadastro.html">Criar conta</a>
+                <a href="cadastro.html">Nao tem conta? Registre-se</a>
             </div>
+
+            <div id="resultado"></div>
         </section>
+
     </div>
+
+    <footer>TaskFlow — Front-end didático · Node.js + Express + SQLite</footer>
 
     <script src="js/api.js"></script>
     <script src="js/login.js"></script>

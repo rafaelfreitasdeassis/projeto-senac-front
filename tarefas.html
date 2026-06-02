@@ -3,61 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minhas Tarefas</title>
+    <title>Minhas Tarefas — TaskFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
-        <h1>Minhas Tarefas</h1>
-        <p>Gerencie suas tarefas depois de autenticar.</p>
-    </header>
 
-    <nav class="page-nav">
-        <a class="button" href="index.html">Início</a>
-        <a class="button" href="cadastro.html">Cadastro</a>
-        <a class="button" href="login.html">Login</a>
-        <a class="button" href="perfil.html">Perfil</a>
-        <a class="button" href="tarefas.html">Tarefas</a>
+    <!-- ── NAVBAR ── -->
+    <nav class="topbar">
+        <div class="topbar-inner">
+            <a class="topbar-brand" href="index.html">
+                <span class="brand-name">Task<span>Flow</span></span>
+            </a>
+            <div class="topbar-nav">
+                <a class="nav-link" href="index.html">Início</a>
+                <a class="nav-link" href="cadastro.html">Cadastro</a>
+                <a class="nav-link" href="login.html">Login</a>
+                <a class="nav-link" href="perfil.html">Perfil</a>
+                <a class="nav-link active" href="tarefas.html">Tarefas</a>
+            </div>
+            <div class="topbar-actions">
+                <button id="topbar-logout" class="secondary small is-hidden" type="button">Sair</button>
+            </div>
+        </div>
     </nav>
 
+    <!-- ── CONTEÚDO ── -->
     <div class="container">
-        <section class="card instructions">
-            <h2>Instruções</h2>
-            <p>Se você estiver logado, suas tarefas serão carregadas automaticamente. Use o formulário abaixo para criar novas tarefas.</p>
-        </section>
+
+        <!-- Perfil resumido -->
         <section class="card" id="perfil-card">
-            <h2>Perfil</h2>
+            <div class="card-header">
+                <div>
+                    <h2>Perfil</h2>
+                    <p>Usuário autenticado via JWT.</p>
+                </div>
+            </div>
+            <!-- tarefas.js popula este elemento -->
             <div id="perfil-info"></div>
-            <button id="btn-logout" class="secondary">Sair</button>
+            <button id="btn-logout" class="secondary">Sair da conta</button>
         </section>
 
+        <!-- Nova tarefa + lista -->
         <section class="card" id="tarefas-card">
-            <h2>Cadastro de Tarefas</h2>
-            <form id="form-tarefa">
-                <div class="form-field">
-                    <label for="tarefa-titulo">Título da tarefa</label>
-                    <input type="text" id="tarefa-titulo" placeholder="Ex: Estudar Node" required>
+            <div class="card-header">
+                <div>
+                    <h2>Minhas Tarefas</h2>
+                    <p>Crie e gerencie suas atividades.</p>
                 </div>
-                <button type="submit">Criar tarefa</button>
+            </div>
+
+            <div class="view-switch" role="tablist" aria-label="Modo de visualização das tarefas">
+                <button id="view-cards" class="small active" type="button">Cards</button>
+                <button id="view-table" class="small secondary" type="button">Tabela</button>
+            </div>
+
+            <!-- Formulário inline de criação -->
+            <form id="form-tarefa" class="form-inline">
+                <div class="form-field">
+                    <label for="tarefa-titulo">Nova tarefa</label>
+                    <input type="text" id="tarefa-titulo" placeholder="Ex: Estudar Node.js" required>
+                </div>
+                <button type="submit">+ Adicionar</button>
             </form>
-            <div class="table-wrapper">
+
+            <div id="tarefas-cards-wrapper">
+                <div id="lista-tarefas-cards" class="tarefas-grid"></div>
+            </div>
+
+            <div id="tarefas-tabela-wrapper" class="table-wrapper is-hidden">
                 <table>
                     <thead>
                         <tr>
-                            <th>Título</th>
+                            <th>Titulo</th>
                             <th>Status</th>
-                            <th>Ações</th>
+                            <th>Acoes</th>
                         </tr>
                     </thead>
-                    <tbody id="lista-tarefas"></tbody>
+                    <tbody id="lista-tarefas-tabela"></tbody>
                 </table>
             </div>
+
             <div id="resultado"></div>
-            <div class="links">
-                <a href="index.html">Voltar</a>
-            </div>
         </section>
+
     </div>
+
+    <footer>TaskFlow — Front-end didático · Node.js + Express + SQLite</footer>
 
     <script src="js/api.js"></script>
     <script src="js/tarefas.js"></script>

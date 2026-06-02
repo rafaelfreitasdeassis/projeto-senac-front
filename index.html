@@ -3,42 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API REST Usuários e Tarefas</title>
+    <title>TaskFlow — Gerenciamento de Tarefas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
-        <h1>API REST — Usuários e Tarefas</h1>
-        <p>Front-end didático para mostrar a integração entre o cliente e o backend.</p>
-    </header>
 
-    <nav class="page-nav">
-        <a class="button" href="index.html">Início</a>
-        <a class="button" href="cadastro.html">Cadastro</a>
-        <a class="button" href="login.html">Login</a>
-        <a class="button" href="tarefas.html">Tarefas</a>
+    <!-- ── NAVBAR ── -->
+    <nav class="topbar">
+        <div class="topbar-inner">
+            <a class="topbar-brand" href="index.html">
+                <span class="brand-name">Task<span>Flow</span></span>
+            </a>
+            <div class="topbar-nav">
+                <a class="nav-link active" href="index.html">Início</a>
+                <a class="nav-link" href="cadastro.html">Cadastro</a>
+                <a class="nav-link" href="login.html">Login</a>
+                <a class="nav-link" href="perfil.html">Perfil</a>
+                <a class="nav-link" href="tarefas.html">Tarefas</a>
+            </div>
+            <div class="topbar-actions">
+                <button id="topbar-logout" class="secondary small is-hidden" type="button">Sair</button>
+            </div>
+        </div>
     </nav>
 
+    <!-- ── HERO ── -->
+    <div class="page-hero">
+        <h1>Gerencie suas tarefas</h1>
+        <p>Cadastre-se, autentique e organize suas atividades com JWT.</p>
+    </div>
+
+    <!-- ── CONTEÚDO ── -->
     <div class="container">
+
         <section class="card">
-            <h2>Bem-vindo</h2>
-            <p>Esta aplicação exemplifica o fluxo de cadastro, login e gerenciamento de tarefas usando JWT.</p>
-            <div class="split">
-                <a class="button" href="cadastro.html">Cadastro de Usuário</a>
-                <a class="button" href="login.html">Login</a>
-                <a class="button" href="perfil.html">Perfil</a>
-                <a class="button" href="tarefas.html">Minhas Tarefas</a>
+            <div class="card-header">
+                <div>
+                    <h2>Acesso rápido</h2>
+                    <p>Por onde você quer começar?</p>
+                </div>
+            </div>
+            <div class="quick-links">
+                <a class="quick-link-item" href="cadastro.html">
+                    <span class="ql-title">Cadastro</span>
+                    <span class="ql-desc">Crie sua conta para começar a usar.</span>
+                </a>
+                <a class="quick-link-item" href="login.html">
+                    <span class="ql-title">Login</span>
+                    <span class="ql-desc">Autentique-se com e-mail e senha.</span>
+                </a>
+                <a class="quick-link-item" href="perfil.html">
+                    <span class="ql-title">Perfil</span>
+                    <span class="ql-desc">Visualize seus dados do backend.</span>
+                </a>
+                <a class="quick-link-item" href="tarefas.html">
+                    <span class="ql-title">Minhas Tarefas</span>
+                    <span class="ql-desc">Crie e gerencie suas tarefas.</span>
+                </a>
             </div>
         </section>
 
         <section class="card">
-            <h2>Como usar</h2>
-            <p>1. Cadastre um usuário.</p>
-            <p>2. Faça login para receber o token JWT.</p>
-            <p>3. Acesse a página de tarefas para criar e listar as tarefas do seu usuário.</p>
+            <div class="card-header">
+                <div>
+                    <h2>Como usar</h2>
+                    <p>Siga os passos abaixo para explorar a aplicação.</p>
+                </div>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <strong>Cadastre um usuário</strong>
+                        <span>Preencha nome, e-mail, telefone e senha.</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <strong>Faça login</strong>
+                        <span>Receba o token JWT e acesse as áreas protegidas.</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <strong>Gerencie suas tarefas</strong>
+                        <span>Crie, conclua e exclua tarefas em tempo real.</span>
+                    </div>
+                </div>
+            </div>
         </section>
+
     </div>
 
-    <footer>Front-end simples para demonstrar chamadas REST em Node.js + Express + SQLite.</footer>
+    <footer>TaskFlow — Front-end didático · Node.js + Express + SQLite</footer>
+    <script src="js/api.js"></script>
 </body>
 </html>

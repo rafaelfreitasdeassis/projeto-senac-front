@@ -3,55 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Usuário</title>
+    <title>Cadastro — TaskFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
-        <h1>Cadastro de Usuário</h1>
-        <p>Crie um novo usuário para usar a API.</p>
-    </header>
 
-    <nav class="page-nav">
-        <a class="button" href="index.html">Início</a>
-        <a class="button" href="cadastro.html">Cadastro</a>
-        <a class="button" href="login.html">Login</a>
-        <a class="button" href="perfil.html">Perfil</a>
-        <a class="button" href="tarefas.html">Tarefas</a>
+    <!-- ── NAVBAR ── -->
+    <nav class="topbar">
+        <div class="topbar-inner">
+            <a class="topbar-brand" href="index.html">
+                <span class="brand-name">Task<span>Flow</span></span>
+            </a>
+            <div class="topbar-nav">
+                <a class="nav-link" href="index.html">Início</a>
+                <a class="nav-link active" href="cadastro.html">Cadastro</a>
+                <a class="nav-link" href="login.html">Login</a>
+                <a class="nav-link" href="perfil.html">Perfil</a>
+                <a class="nav-link" href="tarefas.html">Tarefas</a>
+            </div>
+            <div class="topbar-actions">
+                <button id="topbar-logout" class="secondary small is-hidden" type="button">Sair</button>
+            </div>
+        </div>
     </nav>
 
-    <div class="container">
-        <section class="card instructions">
-            <h2>Instruções</h2>
-            <p>Preencha os dados do usuário e clique em <strong>Cadastrar</strong>. Depois, use a página de login para autenticar.</p>
+    <!-- ── CONTEÚDO ── -->
+    <div class="container center">
+
+        <section class="card info-card">
+            <p>Preencha os dados abaixo e clique em <strong>Criar conta</strong>. Depois, vá para o Login para autenticar.</p>
         </section>
+
         <section class="card">
+            <div class="card-header">
+                <div>
+                    <h2>Criar conta</h2>
+                    <p>Registre-se para começar a usar o TaskFlow.</p>
+                </div>
+            </div>
+
             <form id="form-cadastro">
                 <div class="form-field">
-                    <label for="cadastro-nome">Nome</label>
-                    <input type="text" id="cadastro-nome" required>
+                    <label for="cadastro-nome">Nome completo</label>
+                    <input type="text" id="cadastro-nome" placeholder="Seu nome" required>
                 </div>
                 <div class="form-field">
                     <label for="cadastro-email">E-mail</label>
-                    <input type="email" id="cadastro-email" required>
+                    <input type="email" id="cadastro-email" placeholder="seu@email.com" required>
                 </div>
                 <div class="form-field">
                     <label for="cadastro-telefone">Telefone</label>
-                    <input type="tel" id="cadastro-telefone" required>
+                    <input type="tel" id="cadastro-telefone" placeholder="(11) 91234-5678" required>
                 </div>
                 <div class="form-field">
                     <label for="cadastro-senha">Senha</label>
-                    <input type="password" id="cadastro-senha" required>
+                    <input type="password" id="cadastro-senha" placeholder="Mínimo 6 caracteres" required>
                 </div>
-                <button type="submit">Cadastrar</button>
+                <button type="submit" class="full-width">Criar conta</button>
             </form>
+
             <div id="resultado"></div>
-            <div class="links">
-                <a href="index.html">Voltar</a>
-                <a href="login.html">Já tenho conta</a>
-            </div>
         </section>
+
     </div>
+
+    <footer>TaskFlow — Front-end didático · Node.js + Express + SQLite</footer>
 
     <script src="js/api.js"></script>
     <script src="js/cadastro.js"></script>

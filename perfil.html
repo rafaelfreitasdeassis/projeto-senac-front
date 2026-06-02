@@ -3,40 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil do Usuário</title>
+    <title>Perfil — TaskFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
-        <h1>Perfil do Usuário</h1>
-        <p>Consulte suas informações pessoais armazenadas no backend.</p>
-    </header>
 
-    <nav class="page-nav">
-        <a class="button" href="index.html">Início</a>
-        <a class="button" href="cadastro.html">Cadastro</a>
-        <a class="button" href="login.html">Login</a>
-        <a class="button" href="tarefas.html">Tarefas</a>
-        <a class="button" href="perfil.html">Perfil</a>
+    <!-- ── NAVBAR ── -->
+    <nav class="topbar">
+        <div class="topbar-inner">
+            <a class="topbar-brand" href="index.html">
+                <span class="brand-name">Task<span>Flow</span></span>
+            </a>
+            <div class="topbar-nav">
+                <a class="nav-link" href="index.html">Início</a>
+                <a class="nav-link" href="cadastro.html">Cadastro</a>
+                <a class="nav-link" href="login.html">Login</a>
+                <a class="nav-link active" href="perfil.html">Perfil</a>
+                <a class="nav-link" href="tarefas.html">Tarefas</a>
+            </div>
+            <div class="topbar-actions">
+                <button id="topbar-logout" class="secondary small is-hidden" type="button">Sair</button>
+            </div>
+        </div>
     </nav>
 
+    <!-- ── CONTEÚDO ── -->
     <div class="container">
-        <section class="card instructions">
-            <h2>Instruções</h2>
-            <p>Esta página exibe os dados do usuário autenticado usando o token JWT salvo no navegador.</p>
+
+        <section class="card info-card">
+            <p>Esta página exibe os dados do usuário autenticado lidos diretamente do backend usando o token JWT.</p>
         </section>
 
         <section class="card" id="perfil-card">
-            <h2>Meus Dados</h2>
+            <div class="card-header">
+                <div>
+                    <h2>Meus Dados</h2>
+                    <p>Informações retornadas pela API.</p>
+                </div>
+            </div>
+            <!-- perfil.js popula este elemento -->
             <div id="perfil-info"></div>
-            <button id="btn-logout" class="secondary">Sair</button>
+            <button id="btn-logout" class="secondary">Sair da conta</button>
         </section>
 
         <section class="card">
-            <h2>Resultado da API</h2>
-            <div id="resultado"></div>
+            <div class="card-header">
+                <div>
+                    <h2>Token JWT</h2>
+                    <p>Token armazenado atualmente no navegador.</p>
+                </div>
+            </div>
+            <pre id="jwt-token-value" class="token-box"></pre>
         </section>
+
     </div>
+
+    <footer>TaskFlow — Front-end didático · Node.js + Express + SQLite</footer>
 
     <script src="js/api.js"></script>
     <script src="js/perfil.js"></script>

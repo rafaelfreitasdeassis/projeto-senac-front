@@ -13,6 +13,36 @@ function clearToken() {
     localStorage.removeItem(TOKEN_KEY);
 }
 
+function setupTopbarAuth() {
+    const nav = document.querySelector('.topbar-nav');
+    if (!nav) return;
+
+    const token = getToken();
+    const links = Array.from(nav.querySelectorAll('.nav-link'));
+
+    links.forEach((link) => {
+        const href = (link.getAttribute('href') || '').trim();
+        let show = false;
+
+        if (token) {
+            show = href === 'index.html' || href === 'perfil.html' || href === 'tarefas.html';
+        } else {
+            show = href === 'index.html' || href === 'login.html';
+        }
+
+        link.classList.toggle('is-hidden', !show);
+    });
+
+    const topbarLogout = document.getElementById('topbar-logout');
+    if (topbarLogout) {
+        if (token) {
+            topbarLogout.classList.remove('is-hidden');
+        } else {
+            topbarLogout.classList.add('is-hidden');
+        }
+    }
+}
+
 function getResultadoArea() {
     return document.getElementById('resultado');
 }
@@ -83,7 +113,20 @@ async function apiRequest(path, options = {}) {
 
 function logout(redirect = true) {
     clearToken();
+    setupTopbarAuth();
     if (redirect) {
         window.location.href = 'login.html';
     }
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+    setupTopbarAuth();
+
+    const topbarLogout = document.getElementById('topbar-logout');
+    if (topbarLogout) {
+        topbarLogout.addEventListener('click', (event) => {
+            event.preventDefault();
+            logout(true);
+        });
+    }
+});
