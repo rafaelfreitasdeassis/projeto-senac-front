@@ -22,23 +22,23 @@ function setupTopbarAuth() {
 
     links.forEach((link) => {
         const href = (link.getAttribute('href') || '').trim();
-        let show = false;
+        const show = href === 'index.html'
+            || href === 'tarefas.html'
+            || href === 'login.html'
+            || href === 'cadastro.html'
+            || (token && href === 'perfil.html');
 
-        if (token) {
-            show = href === 'index.html' || href === 'perfil.html' || href === 'tarefas.html';
-        } else {
-            show = href === 'index.html' || href === 'login.html';
-        }
-
-        link.classList.toggle('is-hidden', !show);
+        link.classList.toggle('d-none', !show);
     });
 
     const topbarLogout = document.getElementById('topbar-logout');
     if (topbarLogout) {
         if (token) {
             topbarLogout.classList.remove('is-hidden');
+            topbarLogout.classList.remove('d-none');
         } else {
             topbarLogout.classList.add('is-hidden');
+            topbarLogout.classList.add('d-none');
         }
     }
 }
@@ -49,40 +49,36 @@ function getResultadoArea() {
 
 function mostrarResultado(texto, tipo = 'success') {
     const resultadoArea = getResultadoArea();
-    if (!resultadoArea) {
-        console.log(texto);
-        return;
+    const isSuccess = tipo === 'success';
+
+    if (window.Swal) {
+        Swal.fire({
+            icon: isSuccess ? 'success' : 'error',
+            text: texto,
+            confirmButtonColor: '#2563eb',
+        });
     }
 
-    resultadoArea.textContent = texto;
-    resultadoArea.className = tipo === 'success' ? 'alert success' : 'alert error';
+    if (resultadoArea) {
+        resultadoArea.className = `alert alert-${isSuccess ? 'success' : 'danger'} mt-3 mb-0`;
+        resultadoArea.textContent = texto;
+    } else if (!window.Swal) {
+        console.log(texto);
+    }
 }
 
 function setupValidation(form) {
     if (!form) return;
-
-    Array.from(form.elements).forEach(element => {
-        if (!(element instanceof HTMLInputElement)) return;
-
-        element.addEventListener('input', () => {
-            element.setCustomValidity('');
-        });
-
-        element.addEventListener('invalid', () => {
-            if (element.validity.valueMissing) {
-                element.setCustomValidity('Este campo é obrigatório.');
-            } else if (element.validity.typeMismatch) {
-                element.setCustomValidity('Por favor, informe um valor válido.');
-            } else {
-                element.setCustomValidity('Valor inválido.');
-            }
-        });
-    });
 }
 
 async function apiRequest(path, options = {}) {
     const token = getToken();
-    const headers = { 'Content-Type': 'application/json' };
+    const isFormData = options.body instanceof FormData;
+    const headers = {};
+
+    if (!isFormData) {
+        headers['Content-Type'] = 'application/json';
+    }
 
     if (options.auth !== false && token) {
         headers.Authorization = `Bearer ${token}`;
@@ -91,7 +87,9 @@ async function apiRequest(path, options = {}) {
     const resposta = await fetch(`${API_BASE}${path}`, {
         method: options.method || 'GET',
         headers,
-        body: options.body ? JSON.stringify(options.body) : undefined,
+        body: options.body
+            ? (isFormData ? options.body : JSON.stringify(options.body))
+            : undefined,
     });
 
     const textoResposta = await resposta.text();

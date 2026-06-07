@@ -2,13 +2,13 @@
    VARIÁVEIS DE DESIGN (tokens)
    ============================================================ */
 :root {
-    /* Cores primárias */
-    --color-primary:        #6366f1;   /* índigo vibrante */
-    --color-primary-dark:   #4f46e5;
-    --color-primary-light:  #e0e7ff;
+    /* Cores primárias (cinza, azul, verde) */
+    --color-primary:        #2563eb;
+    --color-primary-dark:   #1d4ed8;
+    --color-primary-light:  #dbeafe;
 
     /* Cores de superfície */
-    --color-bg:             #f1f5f9;
+    --color-bg:             #f3f4f6;
     --color-surface:        #ffffff;
     --color-surface-alt:    #f8fafc;
     --color-border:         #e2e8f0;
@@ -18,7 +18,7 @@
     --color-text-muted:     #64748b;
 
     /* Feedback */
-    --color-success:        #16a34a;
+    --color-success:        #15803d;
     --color-success-bg:     #dcfce7;
     --color-error:          #dc2626;
     --color-error-bg:       #fee2e2;
@@ -326,6 +326,61 @@ body {
 }
 
 /* ============================================================
+   CLASSES SIMPLES DE APOIO (LEGIBILIDADE)
+   ============================================================ */
+.app-page {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-12);
+}
+
+.app-card {
+    margin-bottom: var(--space-6);
+    box-shadow: var(--shadow-md);
+}
+
+.app-profile-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-6);
+}
+
+.app-overline {
+    text-transform: uppercase;
+    color: var(--color-primary);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    margin-bottom: var(--space-2);
+}
+
+.app-title {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--space-2);
+}
+
+.app-subtitle {
+    font-size: var(--font-size-xl);
+    margin-bottom: 2px;
+}
+
+.app-muted {
+    color: var(--color-text-muted);
+    margin-bottom: 0;
+}
+
+.app-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+}
+
+.app-header {
+    padding-bottom: var(--space-3);
+    margin-bottom: var(--space-2);
+}
+
+/* ============================================================
    BOTÕES
    ============================================================ */
 button,
@@ -569,6 +624,13 @@ button.small {
     word-break: break-word;
 }
 
+.tarefa-card-desc {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-top: 2px;
+    word-break: break-word;
+}
+
 .tarefa-card.done .tarefa-card-title {
     text-decoration: line-through;
     color: var(--color-text-muted);
@@ -610,6 +672,12 @@ button.small {
     border-radius: var(--radius-md);
     border: 1px solid var(--color-border);
     margin-top: var(--space-4);
+}
+
+.table-actions {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
 }
 
 table {
@@ -752,6 +820,105 @@ table tbody tr:hover { background: #fafafa; }
     margin: var(--space-2) 0 var(--space-5);
 }
 
+.view-switch-simple {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.view-switch-simple button {
+    border: 1px solid var(--color-border);
+    background: #fff;
+    color: var(--color-text);
+}
+
+.view-switch-simple button.active {
+    background: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+}
+
+.task-form-simple {
+    display: grid;
+    grid-template-columns: 1fr 220px auto;
+    gap: var(--space-3);
+    align-items: end;
+    margin-bottom: var(--space-4);
+}
+
+.task-form-simple select {
+    width: 100%;
+    padding: 10px var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    background: #fff;
+}
+
+.task-form-modal textarea,
+.task-form-modal select,
+.task-form-modal input {
+    width: 100%;
+    padding: 10px var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: var(--font-size-base);
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+.status-pill.novo {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.status-pill.andamento {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-pill.concluida {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.kanban-board {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+}
+
+.kanban-column h3 {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--space-3);
+}
+
+.kanban-list {
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.kanban-card,
+.tarefa-card {
+    cursor: grab;
+}
+
+.kanban-card:active,
+.tarefa-card:active {
+    cursor: grabbing;
+}
+
 .view-switch button.active {
     background: var(--color-primary);
     color: white;
@@ -766,6 +933,143 @@ table tbody tr:hover { background: #fafafa; }
 
 .is-hidden {
     display: none !important;
+}
+
+/* ============================================================
+   BOOTSTRAP OVERRIDES E NOVOS COMPONENTES
+   ============================================================ */
+.page-hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 55%, #38bdf8 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.page-hero::after {
+    content: '';
+    position: absolute;
+    inset: auto -10% -40% auto;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    filter: blur(10px);
+}
+
+.page-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+.profile-avatar,
+.profile-avatar-lg {
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255, 255, 255, 0.85);
+    box-shadow: var(--shadow-md);
+    background: var(--color-surface);
+}
+
+.profile-avatar-lg {
+    width: 144px;
+    height: 144px;
+}
+
+.profile-avatar-wrap {
+    flex: 0 0 auto;
+}
+
+.task-card {
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: var(--radius-lg);
+}
+
+.task-card.done {
+    border-color: rgba(34, 197, 94, 0.35);
+    background: linear-gradient(180deg, rgba(34, 197, 94, 0.08), rgba(255, 255, 255, 1));
+}
+
+.task-title.done {
+    text-decoration: line-through;
+    color: var(--color-text-muted);
+}
+
+.kanban-column {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    box-shadow: var(--shadow-sm);
+}
+
+.kanban-list {
+    min-height: 240px;
+}
+
+.kanban-card {
+    background: var(--color-surface-alt);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    box-shadow: var(--shadow-sm);
+}
+
+.kanban-card.done {
+    border-left-color: var(--color-success);
+}
+
+.kanban-card .task-title {
+    color: var(--color-text);
+}
+
+.btn-group.view-switch .btn {
+    min-width: 120px;
+}
+
+.btn-group.view-switch .btn.active {
+    box-shadow: var(--shadow-sm);
+}
+
+.table-responsive {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.token-box {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    min-height: 72px;
+    margin: 0;
+}
+
+.modal-content {
+    border-radius: var(--radius-lg);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: var(--color-border);
+}
+
+.form-label {
+    font-weight: 600;
+}
+
+.form-control,
+.form-select {
+    border-radius: var(--radius-md);
+    border-color: var(--color-border);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.25rem rgba(99, 102, 241, 0.15);
 }
 
 /* ============================================================
@@ -791,4 +1095,13 @@ footer {
     .card { padding: var(--space-5); }
     .form-inline { flex-direction: column; align-items: stretch; }
     .tarefas-grid { grid-template-columns: 1fr; }
+    .task-form-simple { grid-template-columns: 1fr; }
+    .kanban-board { grid-template-columns: 1fr; }
+}
+
+@media (min-width: 992px) {
+    .app-profile-head {
+        flex-direction: row;
+        align-items: center;
+    }
 }

@@ -1,188 +1,416 @@
 const formTarefa = document.getElementById('form-tarefa');
-const listaTarefasCards = document.getElementById('lista-tarefas-cards');
-const listaTarefasTabela = document.getElementById('lista-tarefas-tabela');
-const tabelaWrapper = document.getElementById('tarefas-tabela-wrapper');
+const inputId = document.getElementById('tarefa-id');
+const inputTitulo = document.getElementById('tarefa-titulo');
+const inputDescricao = document.getElementById('tarefa-descricao');
+const inputStatus = document.getElementById('tarefa-status');
+const modalTitle = document.getElementById('tarefaModalTitle');
+const btnNovaTarefa = document.getElementById('btn-nova-tarefa');
+const btnModalSalvar = document.getElementById('btn-modal-salvar');
+const btnModalEditar = document.getElementById('btn-modal-editar');
+const btnModalExcluir = document.getElementById('btn-modal-excluir');
+
+const listaCards = document.getElementById('lista-tarefas-cards');
+const listaTabela = document.getElementById('lista-tarefas-tabela');
+
 const cardsWrapper = document.getElementById('tarefas-cards-wrapper');
+const kanbanWrapper = document.getElementById('tarefas-kanban-wrapper');
+const tabelaWrapper = document.getElementById('tarefas-tabela-wrapper');
+
+const colunaNovo = document.getElementById('kanban-novo');
+const colunaAndamento = document.getElementById('kanban-andamento');
+const colunaConcluida = document.getElementById('kanban-concluida');
+
 const btnViewCards = document.getElementById('view-cards');
+const btnViewKanban = document.getElementById('view-kanban');
 const btnViewTable = document.getElementById('view-table');
-const btnLogout = document.getElementById('btn-logout');
+const tarefaModalEl = document.getElementById('tarefaModal');
 
-let tarefasCache = [];
+const tarefaModal = tarefaModalEl && window.bootstrap
+    ? bootstrap.Modal.getOrCreateInstance(tarefaModalEl)
+    : null;
+
+const STATUS_LABEL = {
+    novo: 'Novo',
+    andamento: 'Em andamento',
+    concluida: 'Concluída',
+};
+
+let tarefas = [];
 let viewMode = 'cards';
+let tarefaSelecionadaId = null;
+let modalMode = 'create';
 
-setupValidation(formTarefa);
+function normalizarStatus(tarefa) {
+    const bruto = String(tarefa?.status || '').toLowerCase();
 
+    if (bruto.includes('and')) return 'andamento';
+    if (bruto.includes('concl')) return 'concluida';
+    if (tarefa?.concluida) return 'concluida';
 
-async function carregarTarefas() {
-    if (!listaTarefasCards || !listaTarefasTabela) {
+    return 'novo';
+}
+
+function aplicarViewMode() {
+    cardsWrapper.classList.toggle('is-hidden', viewMode !== 'cards');
+    kanbanWrapper.classList.toggle('is-hidden', viewMode !== 'kanban');
+    tabelaWrapper.classList.toggle('is-hidden', viewMode !== 'table');
+
+    btnViewCards.classList.toggle('active', viewMode === 'cards');
+    btnViewKanban.classList.toggle('active', viewMode === 'kanban');
+    btnViewTable.classList.toggle('active', viewMode === 'table');
+}
+
+function criarBadgeStatus(status) {
+    return `<span class="status-pill ${status}">${STATUS_LABEL[status] || 'Novo'}</span>`;
+}
+
+function criarCardHtml(tarefa) {
+    const status = normalizarStatus(tarefa);
+    const descricao = tarefa.descricao || '';
+    return `
+        <div class="tarefa-card ${status}">
+            <div class="tarefa-card-title"><b>#${tarefa.id}</b> ${tarefa.titulo}</div>
+            ${descricao ? `<div class="tarefa-card-desc">${descricao}</div>` : ''}
+            <div>${criarBadgeStatus(status)}</div>
+        </div>
+    `;
+}
+
+function criarKanbanItem(tarefa) {
+    const status = normalizarStatus(tarefa);
+    const item = document.createElement('div');
+    item.className = `kanban-card ${status}`;
+    item.draggable = true;
+    item.dataset.id = tarefa.id;
+
+    item.innerHTML = `
+        <div class="tarefa-card-title"><b>#${tarefa.id}</b> ${tarefa.titulo}</div>
+        ${tarefa.descricao ? `<div class="tarefa-card-desc">${tarefa.descricao}</div>` : ''}
+        <div>${criarBadgeStatus(status)}</div>
+    `;
+
+    item.addEventListener('dragstart', (event) => {
+        event.dataTransfer.setData('text/plain', String(tarefa.id));
+    });
+
+    item.addEventListener('click', () => {
+        verTarefa(tarefa.id);
+    });
+
+    return item;
+}
+
+function renderCards() {
+    listaCards.innerHTML = '';
+
+    if (!tarefas.length) {
+        listaCards.innerHTML = '<div class="empty-state"><p>Nenhuma tarefa encontrada.</p></div>';
         return;
     }
 
+    tarefas.forEach((tarefa) => {
+        const card = document.createElement('div');
+        card.innerHTML = criarCardHtml(tarefa);
+        const item = card.firstElementChild;
+        item.addEventListener('click', () => {
+            verTarefa(tarefa.id);
+        });
+        listaCards.appendChild(item);
+    });
+}
+
+function renderTabela() {
+    listaTabela.innerHTML = '';
+
+    if (!tarefas.length) {
+        listaTabela.innerHTML = '<tr><td colspan="5">Nenhuma tarefa encontrada.</td></tr>';
+        return;
+    }
+
+    tarefas.forEach((tarefa) => {
+        const status = normalizarStatus(tarefa);
+        const linha = document.createElement('tr');
+        linha.innerHTML = `
+            <td>${tarefa.id}</td>
+            <td>${tarefa.titulo}</td>
+            <td>${tarefa.descricao || '-'}</td>
+            <td>${criarBadgeStatus(status)}</td>
+            <td class="table-actions">
+                <button type="button" class="small" onclick="verTarefa(${tarefa.id})">Ver</button>
+                <button type="button" class="small" onclick="editarTarefa(${tarefa.id})">Editar</button>
+                <button type="button" class="small danger" onclick="excluirTarefa(${tarefa.id})">Excluir</button>
+            </td>
+        `;
+        listaTabela.appendChild(linha);
+    });
+}
+
+function renderKanban() {
+    colunaNovo.innerHTML = '';
+    colunaAndamento.innerHTML = '';
+    colunaConcluida.innerHTML = '';
+
+    tarefas.forEach((tarefa) => {
+        const status = normalizarStatus(tarefa);
+        const card = criarKanbanItem(tarefa);
+
+        if (status === 'andamento') {
+            colunaAndamento.appendChild(card);
+        } else if (status === 'concluida') {
+            colunaConcluida.appendChild(card);
+        } else {
+            colunaNovo.appendChild(card);
+        }
+    });
+}
+
+function renderTudo() {
+    renderCards();
+    renderKanban();
+    renderTabela();
+    aplicarViewMode();
+}
+
+async function carregarTarefas() {
     try {
         const resposta = await apiRequest('/tarefas');
+
         if (Array.isArray(resposta)) {
-            tarefasCache = resposta;
+            tarefas = resposta;
         } else if (Array.isArray(resposta?.tarefas)) {
-            tarefasCache = resposta.tarefas;
+            tarefas = resposta.tarefas;
         } else if (Array.isArray(resposta?.data)) {
-            tarefasCache = resposta.data;
+            tarefas = resposta.data;
         } else {
-            tarefasCache = [];
+            tarefas = [];
         }
 
-        renderTarefas();
+        renderTudo();
     } catch (erro) {
         mostrarResultado(`Erro ao carregar tarefas: ${erro.message}`, 'error');
     }
 }
 
-function renderTarefas() {
-    listaTarefasCards.innerHTML = '';
-    listaTarefasTabela.innerHTML = '';
+async function atualizarStatusApi(tarefa, novoStatus) {
+    const payload = {
+        titulo: tarefa.titulo,
+        descricao: tarefa.descricao || '',
+        status: novoStatus,
+        concluida: novoStatus === 'concluida',
+    };
 
-    if (!tarefasCache.length) {
-        const empty = `
-            <div class="empty-state">
-                <p>Nenhuma tarefa encontrada.<br>Crie sua primeira tarefa acima!</p>
-            </div>
-        `;
+    await apiRequest(`/tarefas/${tarefa.id}`, {
+        method: 'PUT',
+        body: payload,
+    });
+}
 
-        listaTarefasCards.innerHTML = empty;
-        listaTarefasTabela.innerHTML = '<tr><td colspan="3">Nenhuma tarefa encontrada.</td></tr>';
-        aplicarModoVisualizacao();
-        return;
+async function  moverTarefa(id, novoStatus) {
+    const tarefa = tarefas.find((item) => String(item.id) === String(id));
+    if (!tarefa) return;
+
+    try {
+        await atualizarStatusApi(tarefa, novoStatus);
+
+        tarefa.status = novoStatus;
+        tarefa.concluida = novoStatus === 'concluida';
+
+        renderTudo();
+        mostrarResultado(`Status atualizado para ${STATUS_LABEL[novoStatus]}.`);
+    } catch (erro) {
+        mostrarResultado(`Erro ao atualizar status: ${erro.message}`, 'error');
     }
+}
 
-    tarefasCache.forEach((tarefa) => {
-        const tituloSeguro = JSON.stringify(tarefa.titulo).replace(/"/g, '&quot;');
-
-        const card = document.createElement('div');
-        card.className = `tarefa-card${tarefa.concluida ? ' done' : ''}`;
-        card.innerHTML = `
-            <span class="badge ${tarefa.concluida ? 'done' : 'pending'}">
-                ${tarefa.concluida ? 'Concluida' : 'Pendente'}
-            </span>
-            <div class="tarefa-card-title"> <b>#${tarefa.id}</b> ${tarefa.titulo}</div>
-            <div class="tarefa-card-actions">
-                <button class="small" onclick="toggleTarefa(${tarefa.id}, ${tarefa.concluida}, ${tituloSeguro})">
-                    ${tarefa.concluida ? 'Reabrir' : 'Concluir'}
-                </button>
-                <button class="small danger" onclick="excluirTarefa(${tarefa.id})">Excluir</button>
-            </div>
-        `;
-        listaTarefasCards.appendChild(card);
-
-        const linha = document.createElement('tr');
-        linha.innerHTML = `
-            <td>${tarefa.id}</td>
-            <td>${tarefa.titulo}</td>
-            <td>
-                <span class="status ${tarefa.concluida ? 'done' : 'pending'}">
-                    ${tarefa.concluida ? 'Concluida' : 'Pendente'}
-                </span>
-            </td>
-            <td>
-                <button class="small" onclick="toggleTarefa(${tarefa.id}, ${tarefa.concluida}, ${tituloSeguro})">
-                    ${tarefa.concluida ? 'Reabrir' : 'Concluir'}
-                </button>
-                <button class="small danger" onclick="excluirTarefa(${tarefa.id})">Excluir</button>
-            </td>
-        `;
-        listaTarefasTabela.appendChild(linha);
+function configurarDrop(coluna, statusDestino) {
+    coluna.addEventListener('dragover', (event) => {
+        event.preventDefault();
     });
 
-    aplicarModoVisualizacao();
+    coluna.addEventListener('drop', async (event) => {
+        event.preventDefault();
+        const id = event.dataTransfer.getData('text/plain');
+        await moverTarefa(id, statusDestino);
+    });
 }
 
-function aplicarModoVisualizacao() {
-    if (!cardsWrapper || !tabelaWrapper || !btnViewCards || !btnViewTable) {
-        return;
-    }
-
-    const isCardsView = viewMode === 'cards';
-    const isTableView = !isCardsView;
-
-    // Exibição
-    cardsWrapper.classList.toggle('is-hidden', isTableView);
-    tabelaWrapper.classList.toggle('is-hidden', isCardsView);
-
-    // Botões ativos
-    btnViewCards.classList.toggle('active', isCardsView);
-    btnViewTable.classList.toggle('active', isTableView);
-
-    // Estilo secundário
-    btnViewCards.classList.toggle('secondary', isTableView);
-    btnViewTable.classList.toggle('secondary', isCardsView);
+function getTarefaById(id) {
+    return tarefas.find((item) => String(item.id) === String(id));
 }
 
-async function criarTarefa(event) {
-    event.preventDefault();
+function setCamposSomenteLeitura(somenteLeitura) {
+    inputTitulo.readOnly = somenteLeitura;
+    inputDescricao.readOnly = somenteLeitura;
+    inputStatus.disabled = somenteLeitura;
+}
 
-    const titulo = document.getElementById('tarefa-titulo').value.trim();
-    if (!titulo) {
-        mostrarResultado('O título da tarefa não pode ficar vazio.', 'error');
-        return;
+function preencherModal(tarefa) {
+    inputId.value = tarefa?.id || '';
+    inputTitulo.value = tarefa?.titulo || '';
+    inputDescricao.value = tarefa?.descricao || '';
+    inputStatus.value = normalizarStatus(tarefa || {});
+}
+
+function aplicarModoModal() {
+    const isCreate = modalMode === 'create';
+    const isView = modalMode === 'view';
+
+    setCamposSomenteLeitura(isView);
+
+    btnModalSalvar.classList.toggle('is-hidden', isView);
+    btnModalEditar.classList.toggle('is-hidden', !isView);
+    btnModalExcluir.classList.toggle('is-hidden', isCreate);
+
+    if (isCreate) {
+        modalTitle.textContent = 'Nova tarefa';
+        btnModalSalvar.textContent = 'Salvar';
+    } else if (isView) {
+        modalTitle.textContent = 'Detalhes da tarefa';
+    } else {
+        modalTitle.textContent = 'Editar tarefa';
+        btnModalSalvar.textContent = 'Salvar alterações';
     }
+}
+
+function abrirNovaTarefa() {
+    tarefaSelecionadaId = null;
+    modalMode = 'create';
+    preencherModal({ id: '', titulo: '', descricao: '', status: 'novo' });
+    aplicarModoModal();
+}
+
+function verTarefa(id) {
+    const tarefa = getTarefaById(id);
+    if (!tarefa) return;
+
+    tarefaSelecionadaId = tarefa.id;
+    modalMode = 'view';
+    preencherModal(tarefa);
+    aplicarModoModal();
+    tarefaModal?.show();
+}
+
+function editarTarefa(id = null) {
+    const tarefa = getTarefaById(id || tarefaSelecionadaId);
+    if (!tarefa) return;
+
+    tarefaSelecionadaId = tarefa.id;
+    modalMode = 'edit';
+    preencherModal(tarefa);
+    aplicarModoModal();
+    tarefaModal?.show();
+}
+
+async function excluirTarefa(id = null) {
+    const tarefa = getTarefaById(id || tarefaSelecionadaId);
+    if (!tarefa) return;
+
+    const confirmar = window.Swal
+        ? await Swal.fire({
+            icon: 'warning',
+            text: `Excluir a tarefa "${tarefa.titulo}"?`,
+            showCancelButton: true,
+            confirmButtonText: 'Excluir',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#dc2626',
+        })
+        : { isConfirmed: confirm('Excluir esta tarefa?') };
+
+    if (!confirmar.isConfirmed) return;
 
     try {
-        await apiRequest('/tarefas', { method: 'POST', body: { titulo } });
-        formTarefa.reset();
-        await carregarTarefas();
-        mostrarResultado('Tarefa criada com sucesso.');
-    } catch (erro) {
-        mostrarResultado(`Erro ao criar tarefa: ${erro.message}`, 'error');
-    }
-}
-
-async function toggleTarefa(id, concluida, titulo) {
-    try {
-        await apiRequest(`/tarefas/${id}`, {
-            method: 'PUT',
-            body: { titulo, concluida: !concluida },
-        });
-        await carregarTarefas();
-        mostrarResultado('Status da tarefa atualizado.');
-    } catch (erro) {
-        mostrarResultado(`Erro ao atualizar tarefa: ${erro.message}`, 'error');
-    }
-}
-
-async function excluirTarefa(id) {
-    if (!confirm('Deseja excluir esta tarefa?')) {
-        return;
-    }
-
-    try {
-        await apiRequest(`/tarefas/${id}`, { method: 'DELETE' });
-        await carregarTarefas();
-        mostrarResultado('Tarefa excluída.');
+        await apiRequest(`/tarefas/${tarefa.id}`, { method: 'DELETE' });
+        tarefas = tarefas.filter((item) => String(item.id) !== String(tarefa.id));
+        tarefaModal?.hide();
+        renderTudo();
+        mostrarResultado('Tarefa excluída com sucesso.');
     } catch (erro) {
         mostrarResultado(`Erro ao excluir tarefa: ${erro.message}`, 'error');
     }
 }
 
-if (formTarefa) {
-    formTarefa.addEventListener('submit', criarTarefa);
-}
+async function criarTarefa(event) {
+    event.preventDefault();
 
-if (btnLogout) {
-    btnLogout.addEventListener('click', () => logout(true));
+    const id = inputId.value;
+    const titulo = inputTitulo.value.trim();
+    const descricao = inputDescricao.value.trim();
+    const status = inputStatus.value;
+
+    if (!titulo) return;
+
+    try {
+        if (modalMode === 'edit' && id) {
+            const payload = { titulo, descricao, status, concluida: status === 'concluida' };
+            const resposta = await apiRequest(`/tarefas/${id}`, {
+                method: 'PUT',
+                body: payload,
+            });
+
+            const index = tarefas.findIndex((item) => String(item.id) === String(id));
+            if (index >= 0) {
+                tarefas[index] = {
+                    ...tarefas[index],
+                    ...payload,
+                    ...(typeof resposta === 'object' ? resposta : {}),
+                };
+            }
+
+            mostrarResultado('Tarefa atualizada com sucesso.');
+        } else {
+            const nova = await apiRequest('/tarefas', {
+                method: 'POST',
+                body: { titulo, descricao, status, concluida: status === 'concluida' },
+            });
+
+            if (nova && nova.id) {
+                tarefas.push({ ...nova, descricao, status, concluida: status === 'concluida' });
+            } else {
+                await carregarTarefas();
+            }
+
+            mostrarResultado('Tarefa criada com sucesso.');
+        }
+
+        renderTudo();
+        if (tarefaModal) tarefaModal.hide();
+        formTarefa.reset();
+        inputStatus.value = 'novo';
+        modalMode = 'create';
+        tarefaSelecionadaId = null;
+    } catch (erro) {
+        mostrarResultado(`Erro ao salvar tarefa: ${erro.message}`, 'error');
+    }
 }
 
 btnViewCards.addEventListener('click', () => {
     viewMode = 'cards';
-    aplicarModoVisualizacao();
+    aplicarViewMode();
 });
 
+btnViewKanban.addEventListener('click', () => {
+    viewMode = 'kanban';
+    aplicarViewMode();
+});
 
 btnViewTable.addEventListener('click', () => {
     viewMode = 'table';
-    aplicarModoVisualizacao();
+    aplicarViewMode();
 });
 
+formTarefa.addEventListener('submit', criarTarefa);
 
-window.toggleTarefa = toggleTarefa;
+btnNovaTarefa.addEventListener('click', abrirNovaTarefa);
+btnModalEditar.addEventListener('click', () => editarTarefa());
+btnModalExcluir.addEventListener('click', () => excluirTarefa());
+
+window.verTarefa = verTarefa;
+window.editarTarefa = editarTarefa;
 window.excluirTarefa = excluirTarefa;
+
+configurarDrop(colunaNovo, 'novo');
+configurarDrop(colunaAndamento, 'andamento');
+configurarDrop(colunaConcluida, 'concluida');
 
 window.addEventListener('DOMContentLoaded', async () => {
     if (!getToken()) {
@@ -190,6 +418,5 @@ window.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    await carregarPerfil();
     await carregarTarefas();
 });
