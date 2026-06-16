@@ -17,7 +17,7 @@ let perfilAtual = {};
 let fotoSelecionada = null;
 
 function atualizarAvatar(src) {
-    const foto =  IMAGEM_PADRAO;
+    const foto = src || IMAGEM_PADRAO;
 
     if (perfilAvatar) {
         perfilAvatar.src = foto;
@@ -98,7 +98,7 @@ async function salvarPerfil(event) {
     if (fotoSelecionada) formData.append('foto', fotoSelecionada);
 
     try {
-        await apiRequest('/usuarios', {
+        await apiRequest('/usuarios/' + perfilAtual.id, {
             method: 'PUT',
             body: formData,
         });
