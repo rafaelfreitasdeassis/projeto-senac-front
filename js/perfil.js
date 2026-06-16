@@ -98,7 +98,7 @@ async function salvarPerfil(event) {
     if (fotoSelecionada) formData.append('foto', fotoSelecionada);
 
     try {
-        await apiRequest('/usuarios/perfil', {
+        await apiRequest('/usuarios', {
             method: 'PUT',
             body: formData,
         });
