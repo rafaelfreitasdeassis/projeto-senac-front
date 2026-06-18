@@ -25,7 +25,7 @@ function setupTopbarAuth() {
     links.forEach((link) => {
         const href = (link.getAttribute('href') || '').trim();
         const show = href === 'index.html'
-            || href === 'tarefas.html'
+            || href === 'agendas.html'
             || href === 'login.html'
             || href === 'cadastro.html'
             || (token && href === 'perfil.html');

@@ -13,15 +13,9 @@ const listaCards = document.getElementById('lista-tarefas-cards');
 const listaTabela = document.getElementById('lista-tarefas-tabela');
 
 const cardsWrapper = document.getElementById('tarefas-cards-wrapper');
-const kanbanWrapper = document.getElementById('tarefas-kanban-wrapper');
 const tabelaWrapper = document.getElementById('tarefas-tabela-wrapper');
 
-const colunaNovo = document.getElementById('kanban-novo');
-const colunaAndamento = document.getElementById('kanban-andamento');
-const colunaConcluida = document.getElementById('kanban-concluida');
-
 const btnViewCards = document.getElementById('view-cards');
-const btnViewKanban = document.getElementById('view-kanban');
 const btnViewTable = document.getElementById('view-table');
 const tarefaModalEl = document.getElementById('tarefaModal');
 
@@ -35,7 +29,7 @@ const STATUS_LABEL = {
     concluida: 'Concluída',
 };
 
-let tarefas = [];
+let agendas = [];
 let viewMode = 'cards';
 let tarefaSelecionadaId = null;
 let modalMode = 'create';
@@ -52,11 +46,9 @@ function normalizarStatus(tarefa) {
 
 function aplicarViewMode() {
     cardsWrapper.classList.toggle('is-hidden', viewMode !== 'cards');
-    kanbanWrapper.classList.toggle('is-hidden', viewMode !== 'kanban');
     tabelaWrapper.classList.toggle('is-hidden', viewMode !== 'table');
 
     btnViewCards.classList.toggle('active', viewMode === 'cards');
-    btnViewKanban.classList.toggle('active', viewMode === 'kanban');
     btnViewTable.classList.toggle('active', viewMode === 'table');
 }
 
@@ -64,109 +56,67 @@ function criarBadgeStatus(status) {
     return `<span class="status-pill ${status}">${STATUS_LABEL[status] || 'Novo'}</span>`;
 }
 
-function criarCardHtml(tarefa) {
-    const status = normalizarStatus(tarefa);
-    const descricao = tarefa.descricao || '';
+function criarCardHtml(agenda) {
+    const status = normalizarStatus(agenda);
+    const descricao = agenda.descricao || '';
     return `
-        <div class="tarefa-card ${status}">
-            <div class="tarefa-card-title"><b>#${tarefa.id}</b> ${tarefa.titulo}</div>
-            ${descricao ? `<div class="tarefa-card-desc">${descricao}</div>` : ''}
+        <div class="agenda-card ${status}">
+            <div class="agenda-card-title"><b>#${agenda.id}</b> ${agenda.titulo}</div>
+            ${descricao ? `<div class="agenda-card-desc">${descricao}</div>` : ''}
             <div>${criarBadgeStatus(status)}</div>
         </div>
     `;
 }
 
-function criarKanbanItem(tarefa) {
-    const status = normalizarStatus(tarefa);
-    const item = document.createElement('div');
-    item.className = `kanban-card ${status}`;
-    item.draggable = true;
-    item.dataset.id = tarefa.id;
-
-    item.innerHTML = `
-        <div class="tarefa-card-title"><b>#${tarefa.id}</b> ${tarefa.titulo}</div>
-        ${tarefa.descricao ? `<div class="tarefa-card-desc">${tarefa.descricao}</div>` : ''}
-        <div>${criarBadgeStatus(status)}</div>
-    `;
-
-    item.addEventListener('dragstart', (event) => {
-        event.dataTransfer.setData('text/plain', String(tarefa.id));
-    });
-
-    item.addEventListener('click', () => {
-        verTarefa(tarefa.id);
-    });
-
-    return item;
-}
 
 function renderCards() {
     listaCards.innerHTML = '';
 
-    if (!tarefas.length) {
+    if (!agendas.length) {
         listaCards.innerHTML = '<div class="empty-state"><p>Nenhuma tarefa encontrada.</p></div>';
         return;
     }
 
-    tarefas.forEach((tarefa) => {
+    agendas.forEach((agendas) => {
         const card = document.createElement('div');
-        card.innerHTML = criarCardHtml(tarefa);
+        card.innerHTML = criarCardHtml(agendas);
         const item = card.firstElementChild;
         item.addEventListener('click', () => {
-            verTarefa(tarefa.id);
+            verTarefa(agendas.id);
         });
         listaCards.appendChild(item);
     });
 }
 
-function renderTabela() {
+function renderAgenda() {
     listaTabela.innerHTML = '';
 
-    if (!tarefas.length) {
+    if (!agendas.length) {
         listaTabela.innerHTML = '<tr><td colspan="5">Nenhuma tarefa encontrada.</td></tr>';
         return;
     }
 
-    tarefas.forEach((tarefa) => {
-        const status = normalizarStatus(tarefa);
+    agendas.forEach((agenda) => {
+        const status = normalizarStatus(agenda);
         const linha = document.createElement('tr');
         linha.innerHTML = `
-            <td>${tarefa.id}</td>
-            <td>${tarefa.titulo}</td>
-            <td>${tarefa.descricao || '-'}</td>
+            <td>${agenda.id}</td>
+            <td>${agenda.titulo}</td>
+            <td>${agenda.descricao || '-'}</td>
             <td>${criarBadgeStatus(status)}</td>
             <td class="table-actions">
-                <button type="button" class="small" onclick="verTarefa(${tarefa.id})">Ver</button>
-                <button type="button" class="small" onclick="editarTarefa(${tarefa.id})">Editar</button>
-                <button type="button" class="small danger" onclick="excluirTarefa(${tarefa.id})">Excluir</button>
+                <button type="button" class="small" onclick="verTarefa(${agenda.id})">Ver</button>
+                <button type="button" class="small" onclick="editarTarefa(${agenda.id})">Editar</button>
+                <button type="button" class="small danger" onclick="excluirTarefa(${agenda.id})">Excluir</button>
             </td>
         `;
         listaTabela.appendChild(linha);
     });
 }
 
-function renderKanban() {
-    colunaNovo.innerHTML = '';
-    colunaAndamento.innerHTML = '';
-    colunaConcluida.innerHTML = '';
-
-    tarefas.forEach((tarefa) => {
-        const status = normalizarStatus(tarefa);
-        const card = criarKanbanItem(tarefa);
-
-        if (status === 'andamento') {
-            colunaAndamento.appendChild(card);
-        } else if (status === 'concluida') {
-            colunaConcluida.appendChild(card);
-        } else {
-            colunaNovo.appendChild(card);
-        }
-    });
-}
 
 function renderTudo() {
     renderCards();
-    renderKanban();
     renderTabela();
     aplicarViewMode();
 }
@@ -176,13 +126,13 @@ async function carregarTarefas() {
         const resposta = await apiRequest('/tarefas');
 
         if (Array.isArray(resposta)) {
-            tarefas = resposta;
+            agendas = resposta;
         } else if (Array.isArray(resposta?.tarefas)) {
-            tarefas = resposta.tarefas;
+            agendas = resposta.tarefas;
         } else if (Array.isArray(resposta?.data)) {
-            tarefas = resposta.data;
+            agendas = resposta.data;
         } else {
-            tarefas = [];
+            agendas = [];
         }
 
         renderTudo();
@@ -206,7 +156,7 @@ async function atualizarStatusApi(tarefa, novoStatus) {
 }
 
 async function  moverTarefa(id, novoStatus) {
-    const tarefa = tarefas.find((item) => String(item.id) === String(id));
+    const tarefa = agendas.find((item) => String(item.id) === String(id));
     if (!tarefa) return;
 
     try {
@@ -235,7 +185,7 @@ function configurarDrop(coluna, statusDestino) {
 }
 
 function getTarefaById(id) {
-    return tarefas.find((item) => String(item.id) === String(id));
+    return agendas.find((item) => String(item.id) === String(id));
 }
 
 function setCamposSomenteLeitura(somenteLeitura) {
@@ -320,7 +270,7 @@ async function excluirTarefa(id = null) {
 
     try {
         await apiRequest(`/tarefas/${tarefa.id}`, { method: 'DELETE' });
-        tarefas = tarefas.filter((item) => String(item.id) !== String(tarefa.id));
+        agendas = agendas.filter((item) => String(item.id) !== String(tarefa.id));
         tarefaModal?.hide();
         renderTudo();
         mostrarResultado('Tarefa excluída com sucesso.');
@@ -347,10 +297,10 @@ async function criarTarefa(event) {
                 body: payload,
             });
 
-            const index = tarefas.findIndex((item) => String(item.id) === String(id));
+            const index = agendas.findIndex((item) => String(item.id) === String(id));
             if (index >= 0) {
-                tarefas[index] = {
-                    ...tarefas[index],
+                agendas[index] = {
+                    ...agendas[index],
                     ...payload,
                     ...(typeof resposta === 'object' ? resposta : {}),
                 };
@@ -364,7 +314,7 @@ async function criarTarefa(event) {
             });
 
             if (nova && nova.id) {
-                tarefas.push({ ...nova, descricao, status, concluida: status === 'concluida' });
+                agendas.push({ ...nova, descricao, status, concluida: status === 'concluida' });
             } else {
                 await carregarTarefas();
             }
@@ -385,11 +335,6 @@ async function criarTarefa(event) {
 
 btnViewCards.addEventListener('click', () => {
     viewMode = 'cards';
-    aplicarViewMode();
-});
-
-btnViewKanban.addEventListener('click', () => {
-    viewMode = 'kanban';
     aplicarViewMode();
 });
 

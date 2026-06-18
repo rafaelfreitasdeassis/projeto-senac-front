@@ -1,108 +1,157 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow</title>
+    <title>PetService</title>
 
-    <!-- ── ESTILOS ── -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-    <!-- ── NAVBAR ── -->
+    <!-- NAVBAR -->
     <nav class="topbar">
         <div class="topbar-inner">
+
             <a class="topbar-brand" href="index.html">
-                <span class="brand-name">Task<span>Flow</span></span>
+                🐾 <span class="brand-name">Pet<span>Service</span></span>
             </a>
+
             <div class="topbar-nav">
                 <a class="nav-link active" href="index.html">Início</a>
-                <a class="nav-link " href="login.html">Login</a>
+                <a class="nav-link" href="login.html">Login</a>
                 <a class="nav-link" href="cadastro.html">Cadastro</a>
+                <a class="nav-link" href="agendas.html">Agendamentos</a>
             </div>
+
             <div class="topbar-actions">
-                <button id="topbar-logout" class="secondary small is-hidden" type="button">Sair</button>
+                <button id="topbar-logout" class="secondary small is-hidden" type="button">
+                    Sair
+                </button>
             </div>
+
         </div>
     </nav>
 
-    <!-- ── HERO ── -->
-    <div class="page-hero">
-        <h1>Gerencie suas tarefas</h1>
-        <p>Cadastre-se, autentique e organize suas atividades com JWT.</p>
-    </div>
+    <!-- HERO -->
+    <section class="page-hero">
 
-    <!-- ── CONTEÚDO ── -->
-    <div class="container">
+        <h1>Cuide do seu melhor amigo com praticidade</h1>
 
+        <p>
+            Agende banho, tosa e outros serviços para seu pet de forma rápida e segura.
+        </p>
+
+    </section>
+
+    <!-- CONTEÚDO -->
+    <main class="container">
+
+        <!-- ACESSOS RÁPIDOS -->
         <section class="card">
+
             <div class="card-header">
                 <div>
-                    <h2>Acesso rápido</h2>
-                    <p>Por onde você quer começar?</p>
+                    <h2>Acessar o sistema</h2>
+                    <p>Escolha uma das opções abaixo.</p>
                 </div>
             </div>
+
             <div class="quick-links">
+
                 <a class="quick-link-item" href="cadastro.html">
-                    <span class="ql-title">Cadastro</span>
-                    <span class="ql-desc">Crie sua conta para começar a usar.</span>
+                    <span class="ql-title">Cadastrar Cliente</span>
+                    <span class="ql-desc">
+                        Crie sua conta e registre seus pets.
+                    </span>
                 </a>
+
                 <a class="quick-link-item" href="login.html">
-                    <span class="ql-title">Login</span>
-                    <span class="ql-desc">Autentique-se com e-mail e senha.</span>
+                    <span class="ql-title">Entrar</span>
+                    <span class="ql-desc">
+                        Faça login com seu e-mail e senha.
+                    </span>
                 </a>
-                <a class="quick-link-item" href="perfil.html">
-                    <span class="ql-title">Perfil</span>
-                    <span class="ql-desc">Visualize seus dados do backend.</span>
-                </a>
-                <a class="quick-link-item" href="tarefas.html">
-                    <span class="ql-title">Minhas Tarefas</span>
-                    <span class="ql-desc">Crie e gerencie suas tarefas.</span>
-                </a>
+
             </div>
+
         </section>
 
+        <!-- PASSO A PASSO -->
         <section class="card">
+
             <div class="card-header">
                 <div>
-                    <h2>Como usar</h2>
-                    <p>Siga os passos abaixo para explorar a aplicação.</p>
+                    <h2>Como funciona</h2>
+                    <p>Siga os passos abaixo para utilizar o sistema.</p>
                 </div>
             </div>
+
             <div class="steps">
+
                 <div class="step">
                     <div class="step-number">1</div>
                     <div class="step-content">
-                        <strong>Cadastre um usuário</strong>
-                        <span>Preencha nome, e-mail, telefone e senha.</span>
+                        <strong>Cadastre-se</strong>
+                        <span>
+                            Informe seus dados e crie sua conta.
+                        </span>
                     </div>
                 </div>
+
                 <div class="step">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        <strong>Faça login</strong>
-                        <span>Receba o token JWT e acesse as áreas protegidas.</span>
+                        <strong>Cadastre seu pet</strong>
+                        <span>
+                            Nome, raça, porte, peso e outras informações.
+                        </span>
                     </div>
                 </div>
+
                 <div class="step">
                     <div class="step-number">3</div>
                     <div class="step-content">
-                        <strong>Gerencie suas tarefas</strong>
-                        <span>Crie, conclua e exclua tarefas em tempo real.</span>
+                        <strong>Agende um serviço</strong>
+                        <span>
+                            Escolha data, horário e serviço desejado.
+                        </span>
                     </div>
                 </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <strong>Acompanhe seus agendamentos</strong>
+                        <span>
+                            Consulte e gerencie os serviços agendados.
+                        </span>
+                    </div>
+                </div>
+
             </div>
+
         </section>
 
-    </div>
+    </main>
 
-    <footer>TaskFlow · Node.js + Express + SQLite</footer>
+    <!-- FOOTER -->
+    <footer>
+        <p>
+            🐾 PetService • Sistema de Agendamento para Pet Shop
+        </p>
+    
+    </footer>
 
-    <!-- ── SCRIPTS ── -->
     <script src="js/api.js"></script>
+
 </body>
+
 </html>
