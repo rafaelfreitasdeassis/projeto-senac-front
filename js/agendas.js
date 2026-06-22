@@ -370,7 +370,7 @@ async function ListarPets() {
     try {
         const perfil = await apiRequest('/usuarios/perfil');
 
-        const pets = await apiRequest('/pets/' + perfil.id, {
+        const pets = await apiRequest('/pets/usuario/' + perfil.id, {
             method: 'GET'
         });
 
