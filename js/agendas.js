@@ -363,5 +363,31 @@ window.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    await carregarTarefas();
+    await ListarPets();
 });
+
+async function ListarPets() {
+    try {
+        const perfil = await apiRequest('/usuarios/perfil');
+
+        const pets = await apiRequest('/pets/' + perfil.id, {
+            method: 'GET'
+        });
+
+        const selectPet = document.getElementById('agendamento-pet');
+
+        // Limpa opções existentes
+        selectPet.innerHTML = '<option value="">Selecione um pet</option>';
+
+        // Adiciona os pets retornados pela API
+        pets.forEach(pet => {
+            const option = document.createElement('option');
+            option.value = pet.id;      // Armazena o ID
+            option.textContent = pet.nome; // Exibe o nome
+            selectPet.appendChild(option);
+        });
+
+    } catch (error) {
+        console.error('Erro ao listar pets:', error);
+    }
+}
