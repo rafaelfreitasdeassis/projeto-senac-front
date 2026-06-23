@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetService - Agendamentos</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="topbar">
+        <div class="topbar-inner">
+
+            <a class="topbar-brand" href="index.html">
+                🐾
+                <span class="brand-name">Pet<span>Service</span></span>
+            </a>
+
+            <div class="topbar-nav">
+                <a class="nav-link" href="index.html">Início</a>
+                <a class="nav-link" href="perfil.html">Meu Perfil</a>
+                <a class="nav-link" href="pets.html">Meus Pets</a>
+                <a class="nav-link active" href="agendas.html">Agendamentos</a>
+            </div>
+
+            <div class="topbar-actions">
+                <button id="topbar-logout"
+                    class="btn btn-outline-light btn-sm"
+                    type="button">
+                    Sair
+                </button>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="page-hero">
+        <div class="container">
+            <h1>Meus Agendamentos</h1>
+            <p>
+                Agende banho, tosa e outros serviços para seus pets.
+            </p>
+        </div>
+    </section>
+
+    <!-- CONTEÚDO -->
+    <main class="container app-page">
+
+        <section class="card app-card">
+
+            <div class="card-header app-header">
+
+                <div>
+                    <h2 class="app-subtitle">
+                        Agenda PetService
+                    </h2>
+
+                    <p class="app-muted">
+                        Visualize, edite e exclua seus agendamentos.
+                    </p>
+                </div>
+
+                <button
+                    id="btn-novo-agendamento"
+                    type="button"
+                    class="btn btn-success"
+                    data-bs-toggle="modal"
+                    data-bs-target="#agendamentoModal">
+
+                    <i class="bi bi-calendar-plus me-2"></i>
+                    Novo Agendamento
+
+                </button>
+
+            </div>
+
+            <div id="resultado"></div>
+
+        </section>
+
+        <!-- CARDS -->
+        <section id="agendamentos-cards-wrapper">
+
+            <div
+                id="lista-agendamentos-cards"
+                class="tarefas-grid">
+
+                <!-- preenchido via JS -->
+
+            </div>
+
+        </section>
+
+        <!-- TABELA -->
+        <section
+            id="agendamentos-tabela-wrapper"
+            class="table-wrapper mt-4">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Pet</th>
+                            <th>Serviço</th>
+                            <th>Data</th>
+                            <th>Horário</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="lista-agendamentos-tabela">
+                        <!-- preenchido via JS -->
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="text-center py-4">
+        🐾 PetService • Sistema de Agendamento para Pet Shop
+    </footer>
+
+    <!-- MODAL -->
+    <div
+        class="modal fade"
+        id="agendamentoModal"
+        tabindex="-1"
+        aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <form id="form-agendamento">
+
+                    <div class="modal-header">
+
+                        <h5 class="modal-title" id="titulo-modal">
+                            Novo Agendamento
+                        </h5>
+
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                        </button>
+
+                    </div>
+
+                    <div class="modal-body">
+
+                        <input
+                            type="hidden"
+                            id="agendamento-id">
+
+                        <!-- PET -->
+                        <div class="mb-3">
+
+                            <label
+                                for="agendamento-pet"
+                                class="form-label">
+
+                                Pet
+
+                            </label>
+
+                            <select
+                                id="agendamento-pet"
+                                class="form-select"
+                                required>
+
+                                <option value="">
+                                    Selecione um pet
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- SERVIÇO -->
+                        <div class="mb-3">
+
+                            <label
+                                for="agendamento-servico"
+                                class="form-label">
+
+                                Serviço
+
+                            </label>
+
+                            <select
+                                id="agendamento-servico"
+                                class="form-select"
+                                required>
+
+                                <option value="">
+                                    Selecione um serviço
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- DATA -->
+                        <div class="mb-3">
+
+                            <label
+                                for="agendamento-data"
+                                class="form-label">
+
+                                Data
+
+                            </label>
+
+                            <input
+                                type="date"
+                                id="agendamento-data"
+                                class="form-control"
+                                required>
+
+                        </div>
+
+                        <!-- HORA -->
+                        <div class="mb-3">
+
+                            <label
+                                for="agendamento-hora"
+                                class="form-label">
+
+                                Horário
+
+                            </label>
+
+                            <input
+                                type="time"
+                                id="agendamento-hora"
+                                class="form-control"
+                                required>
+
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-danger me-auto"
+                            id="btn-excluir-agendamento">
+
+                            <i class="bi bi-trash"></i>
+                            Excluir
+
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+
+                            Cancelar
+
+                        </button>
+
+                        <button
+                            id="btn-salvar-agendamento"
+                            type="submit"
+                            class="btn btn-success">
+
+                            <i class="bi bi-check-circle me-2"></i>
+                            Salvar
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="js/api.js"></script>
+    <script src="js/agendas.js"></script>
+
+</body>
+
+</html>
