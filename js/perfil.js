@@ -1,4 +1,4 @@
-const perfilInfo = document.getElementById('perfil-info');
+const perfilInfo = document.getElementById('perfil-info'); //TESTE
 const btnLogout = document.getElementById('btn-logout');
 const jwtTokenArea = document.getElementById('jwt-token-value');
 
