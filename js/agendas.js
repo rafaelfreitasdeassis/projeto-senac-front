@@ -363,8 +363,10 @@ window.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    await ListarPets();
-});
+   await ListarPets();
+        await carregarAgendamentos();
+    }
+);
 
 async function ListarPets() {
     try {
@@ -375,6 +377,8 @@ async function ListarPets() {
         });
 
         const selectPet = document.getElementById('agendamento-pet');
+
+        if (!selectPet) return;
 
         // Limpa opções existentes
         selectPet.innerHTML = '<option value="">Selecione um pet</option>';
